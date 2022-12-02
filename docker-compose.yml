@@ -1,0 +1,29 @@
+version: '3.3'
+services:
+  app:
+    build: .
+    ports:
+      - 8080:8080
+    environment:
+      - DATASOURCE_SHADOW=${DATASOURCE_SHADOW}
+    depends_on:
+      - rdbms
+      - cache
+  rdbms:
+    image: mariadb/server:latest
+    ports:
+      - 3306:3306
+    environment:
+      - MARIADB_ROOT_PASSWORD=secret
+      - MARIADB_DATABASE=postgres
+      - MARIADB_USER=postgres
+      - MARIADB_PASSWORD=secret
+    volumes:
+      - pgdata:/var/lib/mysql
+    restart: always
+  cache:
+    image: redis:7
+    ports:
+      - 6379:6379
+volumes:
+  pgdata:
